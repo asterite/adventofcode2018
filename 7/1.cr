@@ -21,19 +21,15 @@ end
 
 order = [] of Char
 
-free_steps = steps.values.select { |step| step.prev.empty? }
+free_steps = steps.values.select &.prev.empty?
 
 steps.size.times do
-  free_steps.sort_by!(&.name)
+  free_steps.sort_by! &.name
   free_step = free_steps.shift
   order << free_step.name
 
-  new_free_steps = free_step.next.select do |next_step|
-    next_step.prev.delete(free_step)
-    next_step.prev.empty?
-  end
-
-  free_steps.concat(new_free_steps)
+  free_step.next.each &.prev.delete(free_step)
+  free_steps.concat(free_step.next.select &.prev.empty?)
 end
 
 puts order.join

@@ -31,10 +31,10 @@ end
 total_time = 0
 done = 0
 workers = Array.new(5) { Worker.new }
-free_steps = steps.values.select { |step| step.prev.empty? }
+free_steps = steps.values.select &.prev.empty?
 
 steps.size.times do
-  free_steps.sort_by!(&.name)
+  free_steps.sort_by! &.name
 
   workers.each do |worker|
     break if free_steps.empty?
@@ -58,12 +58,8 @@ steps.size.times do
     worker.time -= step_time
   end
 
-  new_free_steps = step.next.select do |next_step|
-    next_step.prev.delete(step)
-    next_step.prev.empty?
-  end
-
-  free_steps.concat(new_free_steps)
+  step.next.each &.prev.delete(step)
+  free_steps.concat(step.next.select &.prev.empty?)
 end
 
 puts total_time
