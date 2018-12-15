@@ -181,8 +181,6 @@ class Unit
   end
 end
 
-alias Entry = Wall.class | Ground.class | Unit
-
 units = [] of Unit
 
 input = File.read("#{__DIR__}/input.txt").chomp
