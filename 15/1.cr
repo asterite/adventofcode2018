@@ -1,15 +1,3 @@
-module Wall
-  def self.to_s(io)
-    io << '#'
-  end
-end
-
-module Ground
-  def self.to_s(io)
-    io << '.'
-  end
-end
-
 def surroundings(map, x, y)
   yield x, y - 1 if y < map.size
   yield x - 1, y if x > 0
@@ -62,7 +50,7 @@ class Unit
     return if !current_steps.nil? && current_steps <= steps
 
     object = map[y][x]
-    return unless object == self || object.is_a?(Ground.class)
+    return unless object == self || object == '.'
 
     steps_map[y][x] = steps
     steps += 1
@@ -151,7 +139,7 @@ class Unit
   end
 
   def move_to(x, y, map)
-    map[@y][@x] = Ground
+    map[@y][@x] = '.'
     @x, @y = x, y
     map[@y][@x] = self
   end
@@ -160,7 +148,7 @@ class Unit
     unit.hit_points -= attack_power
     if unit.hit_points <= 0
       unit.dead = true
-      map[unit.y][unit.x] = Ground
+      map[unit.y][unit.x] = '.'
     end
   end
 
@@ -187,10 +175,8 @@ map = input.lines.map_with_index do |line, y|
       unit = Unit.new(x, y, false)
       units << unit
       unit
-    when '#'
-      Wall
     else
-      Ground
+      char
     end
   end
 end
